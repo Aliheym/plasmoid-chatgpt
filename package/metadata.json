@@ -1,0 +1,20 @@
+{
+  "KPlugin": {
+    "Authors": [
+      {
+        "Email": "aliheym.dev@gmail.com",
+        "Name": "aliheym"
+      }
+    ],
+    "Category": "Online Services",
+    "Description": "ChatGPT plasmoid for KDE Plasma",
+    "Icon": "go-jump",
+    "Id": "com.aliheym.chatgpt",
+    "Name": "ChatGPT for KDE Plasma",
+    "Version": "0.1",
+    "Website": "https://github.com/aliheym"
+  },
+  "X-Plasma-API": "declarativeappletscript",
+  "X-Plasma-MainScript": "ui/main.qml",
+  "KPackageStructure": "Plasma/Applet"
+}
