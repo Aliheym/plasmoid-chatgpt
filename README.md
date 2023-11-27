@@ -4,7 +4,7 @@ This is a widget for KDE Plasma that allows you to use ChatGPT from your desktop
 
 ## Example
 
-![Example](./example.png)
+https://github.com/Aliheym/plasmoid-chatgpt/assets/72506898/1741f7a9-f2a9-41d9-80fd-33e87eee1151
 
 ## Installation
 
