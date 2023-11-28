@@ -12,6 +12,15 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v3
 
+      - name: ✏️ Generate release changelog
+        id: generate-release-changelog
+        uses: heinrichreimer/action-github-changelog-generator@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          onlyLastTag: "true"
+          stripHeaders: "true"
+          stripGeneratorNotice: "true"
+
       - name: 📁 Archive the plasmoid
         run: |
           tar czf com.aliheym.chatgpt-${{ github.ref_name }}.tar.gz --directory=./package .
@@ -21,7 +30,8 @@ jobs:
         with:
           files: |
             com.aliheym.chatgpt-${{ github.ref_name }}.tar.gz
-          name: Release ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.generate-release-changelog.outputs.changelog }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
 permissions:
