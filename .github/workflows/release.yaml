@@ -23,3 +23,6 @@ jobs:
             com.aliheym.chatgpt-${{ github.ref_name }}.tar.gz
           name: Release ${{ github.ref_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: write
