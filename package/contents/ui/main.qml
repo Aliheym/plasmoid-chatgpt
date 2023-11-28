@@ -13,16 +13,27 @@ Item {
   id: root
 
   property bool pinned: false;
+  property int focusTimerInterval: 100;
 
   Plasmoid.fullRepresentation: ColumnLayout {
     anchors.fill: parent
 
     Layout.minimumWidth: 240 * PlasmaCore.Units.devicePixelRatio
-    Layout.minimumHeight: 480 * PlasmaCore.Units.devicePixelRatio
-		Layout.preferredWidth: 520 * PlasmaCore.Units.devicePixelRatio
+    Layout.minimumHeight: 470 * PlasmaCore.Units.devicePixelRatio
+		Layout.preferredWidth: 540 * PlasmaCore.Units.devicePixelRatio
     Layout.preferredHeight: 920 * PlasmaCore.Units.devicePixelRatio
 
-    spacing: 0
+    Timer {
+      id: focusTimer
+      interval: root.focusTimerInterval
+      running: false
+
+      onTriggered: {
+        chatGptWebView.forceActiveFocus();
+        chatGptWebView.focus = true;
+        chatGptWebView.runJavaScript("tryToFocusPromptInput()");
+      }
+    }
 
     Connections {
       target: plasmoid
@@ -31,8 +42,7 @@ Item {
 				console.debug(`(onExpandedChanged): plasmoid.plasmoid = "${plasmoid.expanded}"`)
 
         if (plasmoid.expanded && chatGptWebView.loadProgress === 100) {
-          chatGptWebView.focus = true;
-          chatGptWebView.runJavaScript("tryToFocusPromptInput()");
+          focusTimer.start();
         }
 			}
     }
@@ -124,7 +134,7 @@ Item {
         }
 
         const requestedUrl = request.url.toString();
-        if (requestedUrl.startsWith("https://chat.openai.com")) {
+        if (requestedUrl.includes("openai.com")) {
           request.action = WebEngineView.AcceptRequest;
         } else {
           request.action = WebEngineView.IgnoreRequest;

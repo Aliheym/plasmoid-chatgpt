@@ -45,7 +45,7 @@ const onPromptInputKeydown = (event) => {
 }
 
 const isExternalLink = (url) => {
-  return !url.startsWith('https://chat.openai.com');
+  return !url.includes('openai.com');
 }
 
 const main = () => {
