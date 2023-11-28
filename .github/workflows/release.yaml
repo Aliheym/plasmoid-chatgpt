@@ -1,0 +1,25 @@
+name: release
+on:
+  push:
+    tags:
+      - "v*" # Match any tag starting with "v", i.e "v1.0", "v20.15.10"
+
+jobs:
+  release:
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+
+      - name: 📁 Archive the plasmoid
+        run: |
+          tar czf com.aliheym.chatgpt-${{ github.ref_name }}.tar.gz --directory=./package .
+
+      - name: 🚀 Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            com.aliheym.chatgpt-${{ github.ref_name }}.tar.gz
+          name: Release ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
