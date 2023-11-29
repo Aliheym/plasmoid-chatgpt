@@ -31,4 +31,5 @@ Alternatively, you can clone this repository and install the widget using `plasm
 - [x] Send messages on "Ctrl + Enter" keypress
 - [x] Zoom factor setting to zoom in/out the ChatGPT view
 - [x] Open default browser when clicking on external links
+- [x] Select icon for the widget
 - [ ] TODO...
