@@ -15,6 +15,8 @@ Item {
   property bool pinned: false;
   property int focusTimerInterval: 100;
 
+  Plasmoid.icon: plasmoid.configuration.icon
+
   Plasmoid.fullRepresentation: ColumnLayout {
     anchors.fill: parent
 

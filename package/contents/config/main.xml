@@ -7,4 +7,10 @@
           <default>1.0</default>
       </entry>
     </group>
+
+    <group name="Appearance">
+      <entry name="icon" type="String">
+        <default>go-jump</default>
+      </entry>
+    </group>
 </kcfg>
