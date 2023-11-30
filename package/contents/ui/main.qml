@@ -93,61 +93,64 @@ Item {
       }
     }
 
-    WebEngineView {
-      id: chatGptWebView
-      Layout.fillWidth: true
-      Layout.fillHeight: true
+    ColumnLayout {
+      WebEngineView {
+        id: chatGptWebView
 
-      url: "https://chat.openai.com/chat"
-      focus: true
-      zoomFactor: plasmoid.configuration.zoomFactor
+        Layout.fillWidth: true
+        Layout.fillHeight: true
 
-      profile: WebEngineProfile {
-        id: chatGptProfile
+        url: "https://chat.openai.com/chat"
+        focus: true
+        zoomFactor: plasmoid.configuration.zoomFactor
 
-        storageName: "chatgpt"
-        offTheRecord: false
-        httpCacheType: WebEngineProfile.DiskHttpCache
-        persistentCookiesPolicy: WebEngineProfile.ForcePersistentCookies
+        profile: WebEngineProfile {
+          id: chatGptProfile
 
-        userScripts: [
-          WebEngineScript {
-            injectionPoint: WebEngineScript.Deferred
-            sourceUrl: "./browser/chatgpt.js"
-            worldId: WebEngineScript.MainWorld
+          storageName: "chatgpt"
+          offTheRecord: false
+          httpCacheType: WebEngineProfile.DiskHttpCache
+          persistentCookiesPolicy: WebEngineProfile.ForcePersistentCookies
+
+          userScripts: [
+            WebEngineScript {
+              injectionPoint: WebEngineScript.Deferred
+              sourceUrl: "./browser/chatgpt.js"
+              worldId: WebEngineScript.MainWorld
+            }
+          ]
+        }
+
+        onLoadingChanged: {
+          if (loadRequest.status === WebEngineView.LoadSucceededStatus) {
+            // Force focus on the prompt input
+            chatGptWebView.forceActiveFocus();
+            chatGptWebView.runJavaScript("tryToFocusPromptInput()");
           }
-        ]
-      }
-
-      onLoadingChanged: {
-        if (loadRequest.status === WebEngineView.LoadSucceededStatus) {
-          // Force focus on the prompt input
-          chatGptWebView.forceActiveFocus();
-          chatGptWebView.runJavaScript("tryToFocusPromptInput()");
-        }
-      }
-
-      onNavigationRequested: {
-        const currentUrl = chatGptWebView.url.toString();
-        // Only allow external links to be opened from the chat pages
-        // ChatGPT chat page's URL example: https://chat.openai.com/c/uuid or https://chat.openai.com/chat/uuid
-        if (!currentUrl.startsWith("https://chat.openai.com/c")) {
-          return;
         }
 
-        const requestedUrl = request.url.toString();
-        if (requestedUrl.includes("openai.com")) {
-          request.action = WebEngineView.AcceptRequest;
-        } else {
-          request.action = WebEngineView.IgnoreRequest;
+        onNavigationRequested: {
+          const currentUrl = chatGptWebView.url.toString();
+          // Only allow external links to be opened from the chat pages
+          // ChatGPT chat page's URL example: https://chat.openai.com/c/uuid or https://chat.openai.com/chat/uuid
+          if (!currentUrl.startsWith("https://chat.openai.com/c")) {
+            return;
+          }
 
-          Qt.openUrlExternally(request.url);
+          const requestedUrl = request.url.toString();
+          if (requestedUrl.includes("openai.com")) {
+            request.action = WebEngineView.AcceptRequest;
+          } else {
+            request.action = WebEngineView.IgnoreRequest;
+
+            Qt.openUrlExternally(request.url);
+          }
         }
-      }
 
-      onJavaScriptConsoleMessage: {
-        if (!message.startsWith("Refused")) {
-          console.debug(`(onJavaScriptConsoleMessage): ${message}`);
+        onJavaScriptConsoleMessage: {
+          if (!message.startsWith("Refused")) {
+            console.debug(`(onJavaScriptConsoleMessage): ${message}`);
+          }
         }
       }
     }

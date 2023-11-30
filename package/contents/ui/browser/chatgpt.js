@@ -48,11 +48,19 @@ const isExternalLink = (url) => {
   return !url.includes('openai.com');
 }
 
+const isDarkMode = () => document.documentElement.classList.contains('dark');
+
 const main = () => {
   onUrlChanged(() => {
     const promptInput = getPromptInput();
     if (!promptInput) {
       return;
+    }
+
+    if (isDarkMode()) {
+      // `WebEngineView` show the placeholder text in black color when dark mode is enabled.
+      // This is a workaround to fix this issue. We can remove this once the issue is fixed.
+      promptInput.classList.remove('placeholder-black/50');
     }
 
     promptInput.removeEventListener('keydown', onPromptInputKeydown);
