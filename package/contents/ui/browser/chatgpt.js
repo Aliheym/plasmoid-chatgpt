@@ -50,6 +50,44 @@ const isExternalLink = (url) => {
 
 const isDarkMode = () => document.documentElement.classList.contains('dark');
 
+const removeBlackPlaceholderInPromptInput = () => {
+  const promptInput = getPromptInput();
+
+  const placeholderGray = 'placeholder-gray-500'
+  const placeholderBlack = 'placeholder-black/50'
+
+  if (!promptInput?.classList.contains(placeholderGray)) {
+    promptInput.classList.add(placeholderGray);
+    promptInput.classList.remove(placeholderBlack);
+  }
+}
+
+// `WebEngineView` show the placeholder text in black color when dark mode is enabled.
+// This is a workaround to fix this issue. We can remove this once the issue is fixed.
+const fixDarkModeStyles = () => {
+  if (!isDarkMode() || !getPromptInput()) {
+    return;
+  }
+
+  removeBlackPlaceholderInPromptInput();
+
+  const observer = new MutationObserver((changes) => {
+    for (const change of changes) {
+      // If the class attribute is changed, we need to fix the dark mode styles again.
+      if (change.type === 'attributes' && change.attributeName === 'class') {
+        removeBlackPlaceholderInPromptInput();
+
+        observer.disconnect();
+      }
+    }
+  });
+
+  observer.observe(getPromptInput(), {
+    attributes: true,
+    attributeFilter: ['class'],
+  })
+}
+
 const main = () => {
   onUrlChanged(() => {
     const promptInput = getPromptInput();
@@ -57,11 +95,7 @@ const main = () => {
       return;
     }
 
-    if (isDarkMode()) {
-      // `WebEngineView` show the placeholder text in black color when dark mode is enabled.
-      // This is a workaround to fix this issue. We can remove this once the issue is fixed.
-      promptInput.classList.remove('placeholder-black/50');
-    }
+    fixDarkModeStyles()
 
     promptInput.removeEventListener('keydown', onPromptInputKeydown);
 
